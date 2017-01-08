@@ -10,16 +10,26 @@ class Richtypo(object):
         'code'
     ]
 
-    def __init__(self, text, bypass_tags=bypass_tags):
-        self.text = text
-
+    def __init__(self, bypass_tags=bypass_tags, rules=[]):
         self.save_tags_re = []
+        self.rules = []
+
         for tag in bypass_tags:
             self.save_tags_re.append(self._tag_bypass_regex(tag))
 
         self.save_tags_re.append(re.compile(r'<([^>]+)>'))  # generic regex to strip all <tags>
 
+        self.rules += rules
+
         self.saved_tags = []
+
+    def richtypo(self, text):
+        self.text = text
+        self.strip_tags()
+        self.apply_rules()
+        self.restore_tags()
+
+        return self.text
 
     def _tag_bypass_regex(self, tag):
         return re.compile(r'<(%s[^>]*>.+</%s)>' % (tag, tag), flags=re.MULTILINE | re.DOTALL)
@@ -50,3 +60,7 @@ class Richtypo(object):
         restore_tags = re.compile(r'~(\d+)~')
 
         self.text = restore_tags.sub(lambda f: '<%s>' % self.saved_tags.pop(0), self.text)
+
+    def apply_rules(self):
+        for rule in self.rules:
+            self.text = rule.apply(self.text)
