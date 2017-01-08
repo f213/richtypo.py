@@ -1,3 +1,4 @@
+isort==4.2.5
 py==1.4.32
 pytest==3.0.5
 PyYAML==3.12
