@@ -1,4 +1,6 @@
-from richtypo.rules import Rule
+import re
+
+from richtypo.rules import Rule, load_rules_from
 from richtypo import Richtypo
 
 
@@ -52,3 +54,13 @@ def test_rule_order():
     r.apply_rules()
 
     assert r.text == 'acc'  # so the text should not be changed
+
+
+def test_rule_loader():
+    rules = dict(load_rules_from(path='rules/generic.yaml'))
+
+    assert len(rules.keys()) >= 1
+
+    rule = rules['cleanup_before']
+    assert rule.regex == re.compile('\s+')
+    assert rule.replacement == ' '

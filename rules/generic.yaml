@@ -1,0 +1,7 @@
+cleanup_before:
+    regex: '\s+'
+    replacement: ' '
+    specs:
+        - Раз  Тест|Раз Тест
+        -   Раз тест| Раз тест
+        - Раз тест  |Раз тест
