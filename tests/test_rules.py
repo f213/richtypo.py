@@ -1,7 +1,10 @@
+# -*- coding: utf-8
 import re
 
+import six
+
 from richtypo import Richtypo
-from richtypo.rules import Rule, load_rules_from
+from richtypo.rules import ABRule, Rule, load_rules_from
 
 
 def test_rule_generic():
@@ -30,7 +33,8 @@ def test_rule_applying():
         replacement='dd'
     )
 
-    r = Richtypo(rules=[r1, r2])
+    r = Richtypo()
+    r.rules = [r1, r2]
     r.text = 'abb'
     r.apply_rules()
 
@@ -49,7 +53,8 @@ def test_rule_order():
         regex='c{2}',
         replacement='dd'
     )
-    r = Richtypo(rules=[r2, r1])  # r2 works only after r1
+    r = Richtypo()
+    r.rules = [r2, r1]  # r2 works only after r1
     r.text = 'abb'
     r.apply_rules()
 
@@ -69,5 +74,22 @@ def test_rule_loader():
 def test_rule_loader_with_non_breaking_spaces():
     rules = dict(load_rules_from(path='rules/generic.yaml'))
 
-    nbsp = rules['cleanup_after']
-    assert nbsp.replacement == u'\u00A0'  # todo make it working for py2
+    nbsp = rules['nbsp']
+    assert nbsp.replacement == six.u(' ')  # todo make it working for py2
+
+
+def test_getrule_from_available():
+    r = Richtypo()
+    r.available_rules = {
+        'b': Rule(regex='b', replacement='d')
+    }
+    rule = r._getrule('b')
+
+    assert rule.regex == re.compile('b')
+
+
+def test_getrule_from_predefined_rules():
+    r = Richtypo()
+    rule = r._getrule(ABRule)
+
+    assert rule == ABRule

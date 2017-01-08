@@ -1,3 +1,4 @@
+# -*- coding: utf-8
 import re
 
 import six
@@ -10,7 +11,7 @@ except ImportError:
 
 
 SPECIAL_CHARACTERS_MAP = {  # defines a key-value for unicode replacement characters, used in YAML
-    '_': u'\u00A0'          # Test_Phrase maps to Test&nbsp;Phrase for example
+    '_': six.u(' ')          # Test_Phrase maps to Test&nbsp;Phrase for example
 }
 
 
@@ -31,6 +32,9 @@ class Rule(object):
         """
         Unicode non-breaking spaces are marked as '_' in the config
         """
+        for p, r in six.iteritems(SPECIAL_CHARACTERS_MAP):
+            replacement = replacement.replace(p, r)
+        return replacement
 
 
 class ABRule(Rule):

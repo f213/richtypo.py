@@ -1,5 +1,9 @@
+from __future__ import absolute_import
+
 import re
+
 import six
+
 from richtypo import rules
 
 rulesets = {
@@ -46,21 +50,25 @@ class Richtypo(object):
     def _tag_bypass_regex(self, tag):
         return re.compile(r'<(%s[^>]*>.+</%s)>' % (tag, tag), flags=re.MULTILINE | re.DOTALL)
 
+    def _getrule(self, rule):
+        if isinstance(rule, six.string_types):
+            return self.available_rules[rule]
+        elif issubclass(rule, rules.Rule):
+            return rule
+
     def strip_tags(self):
         """
         Replace all tags with ~<tag_num>~
         """
-        replacement_count = 0
+        replacement_count = {'n': 0}  # we use a dict to replace `nonlocal` keyword for py2
 
         def repl(m):
-            nonlocal replacement_count  # TODO: make py2-compatible
-
             tag = m.group(1)
             self.saved_tags.append(tag)
             print(self.saved_tags)
 
-            replacement_count += 1
-            return '~%d~' % replacement_count
+            replacement_count['n'] += 1
+            return '~%d~' % replacement_count['n']
 
         for regex in self.save_tags_re:
             self.text = regex.sub(repl, self.text)
@@ -76,3 +84,7 @@ class Richtypo(object):
     def apply_rules(self):
         for rule in self.rules:
             self.text = rule.apply(self.text)
+
+    # def parse_ruleset(self, ruleset):
+    #     for r in ruleset:
+    #         rule = self._getrule(ruleset)
