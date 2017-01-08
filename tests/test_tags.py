@@ -1,5 +1,6 @@
-from richtypo import Richtypo
 import pytest
+
+from richtypo import Richtypo
 
 
 @pytest.mark.parametrize("input, expected", [

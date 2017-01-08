@@ -1,7 +1,7 @@
 import re
 
-from richtypo.rules import Rule, load_rules_from
 from richtypo import Richtypo
+from richtypo.rules import Rule, load_rules_from
 
 
 def test_rule_generic():
@@ -64,3 +64,10 @@ def test_rule_loader():
     rule = rules['cleanup_before']
     assert rule.regex == re.compile('\s+')
     assert rule.replacement == ' '
+
+
+def test_rule_loader_with_non_breaking_spaces():
+    rules = dict(load_rules_from(path='rules/generic.yaml'))
+
+    nbsp = rules['cleanup_after']
+    assert nbsp.replacement == u'\u00A0'  # todo make it working for py2

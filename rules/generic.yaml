@@ -2,6 +2,12 @@ cleanup_before:
     regex: '\s+'
     replacement: ' '
     specs:
-        - Раз  Тест|Раз Тест
-        -   Раз тест| Раз тест
-        - Раз тест  |Раз тест
+        - "Раз  Тест|Раз Тест"
+        - "  Раз тест| Раз тест"
+        - "Раз тест  |Раз тест "
+
+cleanup_after:
+    regex: '&nbsp;'
+    replacement: '_'
+    specs:
+        - Раз&nbsp;Тест|Раз_Тест
