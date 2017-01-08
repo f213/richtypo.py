@@ -1,4 +1,15 @@
 import re
+import six
+from richtypo import rules
+
+rulesets = {
+    'generic': [
+        'cleanup_before',
+        'emdash-forced',
+        'emdash-middle',
+        'nbsp',
+    ]
+}
 
 
 class Richtypo(object):
@@ -10,16 +21,17 @@ class Richtypo(object):
         'code'
     ]
 
-    def __init__(self, bypass_tags=bypass_tags, rules=[]):
+    def __init__(self, bypass_tags=bypass_tags, lang=[], ruleset=''):
         self.save_tags_re = []
         self.rules = []
+        self.available_rules = {}
 
         for tag in bypass_tags:
             self.save_tags_re.append(self._tag_bypass_regex(tag))
-
         self.save_tags_re.append(re.compile(r'<([^>]+)>'))  # generic regex to strip all <tags>
 
-        self.rules += rules
+        if ruleset:
+            self.rules = self.parse_ruleset(ruleset)
 
         self.saved_tags = []
 
