@@ -6,18 +6,18 @@ import six
 
 from richtypo import rules
 
-rulesets = {
-    'generic': [
-        'cleanup_before',
-        'emdash-forced',
-        'emdash-middle',
-        'nbsp',
-    ]
-}
-
 
 class Richtypo(object):
     text = ''
+
+    rulesets = {
+        'generic': [
+            'cleanup_before',
+            'emdash-forced',
+            'emdash-middle',
+            'nbsp',
+        ],
+    }
 
     bypass_tags = [
         'script',
@@ -34,8 +34,7 @@ class Richtypo(object):
             self.save_tags_re.append(self._tag_bypass_regex(tag))
         self.save_tags_re.append(re.compile(r'<([^>]+)>'))  # generic regex to strip all <tags>
 
-        if ruleset:
-            self.rules = self.parse_ruleset(ruleset)
+        self.parse_ruleset(ruleset)
 
         self.saved_tags = []
 
@@ -50,11 +49,16 @@ class Richtypo(object):
     def _tag_bypass_regex(self, tag):
         return re.compile(r'<(%s[^>]*>.+</%s)>' % (tag, tag), flags=re.MULTILINE | re.DOTALL)
 
-    def _getrule(self, rule):
+    def _get_rule(self, rule):
         if isinstance(rule, six.string_types):
             return self.available_rules[rule]
-        elif issubclass(rule, rules.Rule):
-            return rule
+        else:
+            if issubclass(rule, rules.Rule):
+                return rule
+
+    @classmethod
+    def _get_ruleset(cls, ruleset):
+        return cls.rulesets.get(ruleset, [])
 
     def strip_tags(self):
         """
@@ -65,7 +69,6 @@ class Richtypo(object):
         def repl(m):
             tag = m.group(1)
             self.saved_tags.append(tag)
-            print(self.saved_tags)
 
             replacement_count['n'] += 1
             return '~%d~' % replacement_count['n']
@@ -85,6 +88,8 @@ class Richtypo(object):
         for rule in self.rules:
             self.text = rule.apply(self.text)
 
-    # def parse_ruleset(self, ruleset):
-    #     for r in ruleset:
-    #         rule = self._getrule(ruleset)
+    def parse_ruleset(self, ruleset):
+        for r in self._get_ruleset(ruleset):
+            rule = self._get_rule(r)
+            if rule is not None:
+                self.rules.append(rule)

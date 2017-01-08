@@ -6,6 +6,11 @@ import six
 from richtypo import Richtypo
 from richtypo.rules import ABRule, Rule, load_rules_from
 
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
+
 
 def test_rule_generic():
     r = Rule(
@@ -78,18 +83,41 @@ def test_rule_loader_with_non_breaking_spaces():
     assert nbsp.replacement == six.u(' ')  # todo make it working for py2
 
 
-def test_getrule_from_available():
+def test_get_rule_from_available():
     r = Richtypo()
     r.available_rules = {
         'b': Rule(regex='b', replacement='d')
     }
-    rule = r._getrule('b')
+    rule = r._get_rule('b')
 
     assert rule.regex == re.compile('b')
 
 
-def test_getrule_from_predefined_rules():
+def test_get_rule_from_predefined_rules():
     r = Richtypo()
-    rule = r._getrule(ABRule)
+    rule = r._get_rule(ABRule)
 
     assert rule == ABRule
+
+
+def test_parse_ruleset():
+    r = Richtypo(ruleset='nonexistant')
+    r.available_rules = {
+        'b': Rule(regex='b', replacement='d')
+    }
+
+    with patch('richtypo.Richtypo._get_ruleset') as get_ruleset:
+        get_ruleset.return_value = ['b', ABRule]
+
+        r.parse_ruleset('generic')
+        assert len(r.rules) == 2
+
+
+@patch('richtypo.Richtypo._get_ruleset')
+def test_ruleset_input_param(get_ruleset):
+    get_ruleset.return_value = [
+        ABRule,
+    ]
+    r = Richtypo(ruleset='generic')  # this ruleset realy should exist
+    assert len(r.rules) == 1
+    assert ABRule in r.rules
