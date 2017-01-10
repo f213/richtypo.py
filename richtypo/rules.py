@@ -1,7 +1,6 @@
 # -*- coding: utf-8
 import os
 import re
-from copy import copy
 
 import six
 import yaml
@@ -12,8 +11,12 @@ except ImportError:
     maketrans = str.maketrans
 
 
+NBSP = u'\xa0'
+
+
 SPECIAL_CHARACTERS_MAP = {  # defines a key-value for unicode replacement characters, used in YAML
-    '_': six.u(' ')          # Test_Phrase maps to Test&nbsp;Phrase for example
+
+    '_': NBSP               # Test_Phrase maps to Test&nbsp;Phrase
 }
 
 
@@ -44,11 +47,11 @@ class Rule(object):
         One-time compile of the regex
         """
         resulting_re_flags = 0
-        print('compiling pattern %s with flags' % self.pattern, self.flags)
+        if six.PY2:
+            resulting_re_flags |= re.UNICODE
+
         if len(self.flags):
-            flags = copy(self.flags)
-            resulting_re_flags = getattr(re, flags.pop(0))
-            for flag in flags:
+            for flag in self.flags:
                 resulting_re_flags |= getattr(re, flag)
 
         self._re = re.compile(self.pattern, flags=resulting_re_flags)

@@ -1,6 +1,8 @@
 # -*- coding: utf-8
 import re
 
+import six
+
 from richtypo import Richtypo
 from richtypo.rules import ABRule, Rule
 
@@ -84,11 +86,17 @@ def test_get_rule_from_predefined_rules():
 def test_rule_flags():
     rule = Rule(pattern='A', replacement='b')
     rule._compile()
-    assert rule._re == re.compile('A', flags=0)
+
+    if six.PY2:
+        reference_flags = re.UNICODE
+    else:
+        reference_flags = 0
+
+    assert rule._re == re.compile('A', flags=reference_flags)
 
     rule.flags = ['I']
     rule._compile()
-    assert rule._re == re.compile('A', flags=re.I)
+    assert rule._re == re.compile('A', flags=reference_flags | re.I)
 
 
 def test_build_rule_chain():

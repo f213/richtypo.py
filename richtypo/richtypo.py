@@ -1,3 +1,4 @@
+# -*- coding: utf-8
 from __future__ import absolute_import
 
 import re
@@ -24,7 +25,13 @@ class Richtypo(object):
             'ru:hanging_pretexts',
             'nbsp',
         ],
-        'empty': []  # used for testing
+        'en-lite': [
+            'cleanup_before',
+            'emdash-forced',
+            'emdash-middle',
+            'en:hanging_pretexts',
+            'nbsp',
+        ],
     }
 
     bypass_tags = [

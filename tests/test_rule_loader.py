@@ -1,4 +1,4 @@
-import six
+# -*- coding: utf-8
 
 from richtypo import Richtypo
 from richtypo.rules import load_rules_for
@@ -23,7 +23,7 @@ def test_rule_loader_with_non_breaking_spaces():
     rules = dict(load_rules_for('generic'))
 
     nbsp = rules['nbsp']
-    assert nbsp.replacement == six.u(' ')  # todo make it working for py2
+    assert nbsp.replacement == u'\xa0'
 
 
 @patch('richtypo.Richtypo._get_ruleset')

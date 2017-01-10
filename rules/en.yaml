@@ -1,0 +1,8 @@
+hanging_pretexts:
+  pattern: '(\A|\s)(to|from|for|at|on)\s+'
+  flags:
+    - I
+  replacement: '\1\2_'
+  specs:
+    - "From russia with love|From_russia_with_love"
+    - "From 2 to 3|From_2 to_3"

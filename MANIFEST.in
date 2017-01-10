@@ -1,0 +1,2 @@
+recursive-include richtypo *
+recursive-include rules *
