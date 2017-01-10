@@ -42,14 +42,11 @@ class Richtypo(object):
         'code'
     ]
 
-    def __init__(self, bypass_tags=bypass_tags, ruleset='generic'):
+    def __init__(self, ruleset='generic'):
         self.rules = []
         self.available_rules = {}
 
-        self.save_tags_re = []
-        for tag in bypass_tags:
-            self.save_tags_re.append(self._tag_bypass_regex(tag))
-        self.save_tags_re.append(re.compile(r'<([^>]+)>'))  # generic regex to strip all <tags>
+        self.init_tag_bypass()
 
         self.load_rules_for_ruleset(ruleset)
         self.build_rule_chain(ruleset)
@@ -95,8 +92,12 @@ class Richtypo(object):
                     yield ruledef
 
     @classmethod
-    def _tag_bypass_regex(cls, tag):
-        return re.compile(r'<(%s[^>]*>.+</%s)>' % (tag, tag), flags=re.MULTILINE | re.DOTALL)
+    def init_tag_bypass(cls):
+        def tag_bypass_regex(tag):
+            return re.compile(r'<(%s[^>]*>.+</%s)>' % (tag, tag), flags=re.MULTILINE | re.DOTALL)
+
+        cls.save_tags_re = [tag_bypass_regex(tag) for tag in cls.bypass_tags]
+        cls.save_tags_re.append(re.compile(r'<([^>]+)>'))  # generic regex to strip all <tags>
 
     def _get_rule(self, rule):
         """

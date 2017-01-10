@@ -104,15 +104,3 @@ def test_restore_tags_in_scripts(input):
     r.strip_tags()
     r.restore_tags()
     assert r.text == input
-
-
-@pytest.mark.parametrize("input, expected, bypass_tags", [
-    ('<pre>test</pre>', '~1~test~2~', []),
-    ('<test>test</test>', '~1~', ['test']),
-])
-def test_bypass_tags(input, expected, bypass_tags):
-    r = Richtypo(bypass_tags=bypass_tags)
-    r.text = input
-
-    r.strip_tags()
-    assert r.text == expected
