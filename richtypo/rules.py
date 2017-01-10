@@ -1,4 +1,5 @@
 # -*- coding: utf-8
+import os
 import re
 from copy import copy
 
@@ -69,7 +70,8 @@ class ABRule(Rule):
     replacement = 'b'
 
 
-def load_rules_from(path):
+def load_rules_for(ruledef):
+    path = os.path.join('rules', ruledef + '.yaml')
     with open(path, 'rb') as f:
         for rule_name, rule in six.iteritems(yaml.load(f)):
             yield rule_name, Rule(

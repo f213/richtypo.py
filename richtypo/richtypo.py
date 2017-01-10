@@ -112,8 +112,8 @@ class Richtypo(object):
             if rule is not None:
                 self.rules.append(rule)
 
-    def load_rules(self, path):
-        for rule_name, rule in rules.load_rules_from(os.path.join('rules', path + '.yaml')):
-            rule_name = '%s:%s' % (path, rule_name)
+    def load_rules(self, ruledef):
+        for rule_name, rule in rules.load_rules_for(ruledef):
+            rule_name = '%s:%s' % (ruledef, rule_name)
             if self.available_rules.get(rule_name) is None:
                 self.available_rules[rule_name] = rule

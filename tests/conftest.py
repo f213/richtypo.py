@@ -1,14 +1,12 @@
-import os
-
 
 def pytest_generate_tests(metafunc):
     """
     Generate tests for ruledefs in yaml files according to their specs defined in-place
     """
     if 'rule_name' in metafunc.fixturenames:
-        from richtypo.rules import load_rules_from
+        from richtypo.rules import load_rules_for
         rules = []
         for ruledef in ['generic', 'ru']:
-            rules += [(name, rule) for name, rule in load_rules_from(os.path.join('rules', '%s.yaml' % ruledef))]
+            rules += [(name, rule) for name, rule in load_rules_for(ruledef)]
 
         metafunc.parametrize('rule_name, rule', rules)

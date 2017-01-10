@@ -4,7 +4,7 @@ import re
 import six
 
 from richtypo import Richtypo
-from richtypo.rules import ABRule, Rule, load_rules_from
+from richtypo.rules import ABRule, Rule, load_rules_for
 
 try:
     from unittest.mock import patch
@@ -67,7 +67,7 @@ def test_rule_order():
 
 
 def test_rule_loader():
-    rules = dict(load_rules_from(path='rules/generic.yaml'))
+    rules = dict(load_rules_for('generic'))
 
     assert len(rules.keys()) >= 1
 
@@ -77,7 +77,7 @@ def test_rule_loader():
 
 
 def test_rule_loader_with_non_breaking_spaces():
-    rules = dict(load_rules_from(path='rules/generic.yaml'))
+    rules = dict(load_rules_for('generic'))
 
     nbsp = rules['nbsp']
     assert nbsp.replacement == six.u(' ')  # todo make it working for py2
