@@ -18,6 +18,13 @@ class Richtypo(object):
             'emdash-middle',
             'nbsp',
         ],
+        'ru-lite': [
+            'cleanup_before',
+            'emdash-forced',
+            'emdash-middle',
+            'ru:hanging_pretexts',
+            'nbsp',
+        ],
     }
 
     bypass_tags = [
@@ -55,7 +62,14 @@ class Richtypo(object):
 
     def _get_rule(self, rule):
         if isinstance(rule, six.string_types):
-            return self.available_rules[rule]
+            try:
+                return self.available_rules[rule]
+            except KeyError:
+                try:
+                    return self.available_rules['generic:' + rule]
+                except KeyError:
+                    raise KeyError('Rule not found: ', rule)
+
         else:
             if issubclass(rule, rules.Rule):
                 return rule

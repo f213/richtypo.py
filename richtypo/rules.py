@@ -43,6 +43,7 @@ class Rule(object):
         One-time compile of the regex
         """
         resulting_re_flags = 0
+        print('compiling pattern %s with flags' % self.pattern, self.flags)
         if len(self.flags):
             flags = copy(self.flags)
             resulting_re_flags = getattr(re, flags.pop(0))
