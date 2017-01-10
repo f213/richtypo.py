@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import os
 import re
 
 import six
@@ -25,6 +24,7 @@ class Richtypo(object):
             'ru:hanging_pretexts',
             'nbsp',
         ],
+        'empty': []  # used for testing
     }
 
     bypass_tags = [
@@ -33,7 +33,7 @@ class Richtypo(object):
         'code'
     ]
 
-    def __init__(self, bypass_tags=bypass_tags, lang=['generic'], ruleset=''):
+    def __init__(self, bypass_tags=bypass_tags, ruleset='generic'):
         self.save_tags_re = []
         self.rules = []
         self.available_rules = {}
@@ -42,17 +42,16 @@ class Richtypo(object):
             self.save_tags_re.append(self._tag_bypass_regex(tag))
         self.save_tags_re.append(re.compile(r'<([^>]+)>'))  # generic regex to strip all <tags>
 
-        for lang in lang:
-            self.load_rules(lang)
-
-        self.parse_ruleset(ruleset)
+        self.load_ruledefs_for_ruleset(ruleset)
+        self.build_rule_chain(ruleset)
 
         self.saved_tags = []
 
     def richtypo(self, text):
         self.text = text
+
         self.strip_tags()
-        self.apply_rules()
+        self.apply_rule_chain()
         self.restore_tags()
 
         return self.text
@@ -102,17 +101,32 @@ class Richtypo(object):
 
         self.text = restore_tags.sub(lambda f: '<%s>' % self.saved_tags.pop(0), self.text)
 
-    def apply_rules(self):
+    def apply_rule_chain(self):
         for rule in self.rules:
             self.text = rule.apply(self.text)
 
-    def parse_ruleset(self, ruleset):
+    def build_rule_chain(self, ruleset):
         for r in self._get_ruleset(ruleset):
             rule = self._get_rule(r)
-            if rule is not None:
-                self.rules.append(rule)
 
-    def load_rules(self, ruledef):
+            self.rules.append(rule)
+
+    def load_ruledefs_for_ruleset(self, ruleset):
+        ruledefs = []
+        for rule in self._get_ruleset(ruleset):
+            if isinstance(rule, six.string_types):  # deal only with non-special rules, defined in YAML
+                try:
+                    (ruledef, rule_name) = rule.split(':')
+                except ValueError:
+                    ruledef = 'generic'
+
+                if ruledef not in ruledefs:
+                    ruledefs.append(ruledef)
+
+        for ruledef in ruledefs:
+            self.load_ruledef(ruledef)
+
+    def load_ruledef(self, ruledef):
         for rule_name, rule in rules.load_rules_for(ruledef):
             rule_name = '%s:%s' % (ruledef, rule_name)
             if self.available_rules.get(rule_name) is None:

@@ -1,10 +1,8 @@
 # -*- coding: utf-8
 import re
 
-import six
-
 from richtypo import Richtypo
-from richtypo.rules import ABRule, Rule, load_rules_for
+from richtypo.rules import ABRule, Rule
 
 try:
     from unittest.mock import patch
@@ -41,7 +39,7 @@ def test_rule_applying():
     r = Richtypo()
     r.rules = [r1, r2]
     r.text = 'abb'
-    r.apply_rules()
+    r.apply_rule_chain()
 
     assert r.text == 'add'
 
@@ -61,26 +59,9 @@ def test_rule_order():
     r = Richtypo()
     r.rules = [r2, r1]  # r2 works only after r1
     r.text = 'abb'
-    r.apply_rules()
+    r.apply_rule_chain()
 
     assert r.text == 'acc'  # so the text should not be changed
-
-
-def test_rule_loader():
-    rules = dict(load_rules_for('generic'))
-
-    assert len(rules.keys()) >= 1
-
-    rule = rules['cleanup_before']
-    assert rule.pattern == '\s+'
-    assert rule.replacement == ' '
-
-
-def test_rule_loader_with_non_breaking_spaces():
-    rules = dict(load_rules_for('generic'))
-
-    nbsp = rules['nbsp']
-    assert nbsp.replacement == six.u(' ')  # todo make it working for py2
 
 
 def test_get_rule_from_available():
@@ -110,7 +91,7 @@ def test_rule_flags():
     assert rule._re == re.compile('A', flags=re.I)
 
 
-def test_parse_ruleset():
+def test_build_rule_chain():
     r = Richtypo(ruleset='nonexistant')
     r.available_rules = {
         'b': Rule(pattern='b', replacement='d')
@@ -119,7 +100,7 @@ def test_parse_ruleset():
     with patch('richtypo.Richtypo._get_ruleset') as get_ruleset:
         get_ruleset.return_value = ['b', ABRule]
 
-        r.parse_ruleset('generic')
+        r.build_rule_chain('generic')
         assert len(r.rules) == 2
 
 
