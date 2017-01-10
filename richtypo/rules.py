@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 import re
+from copy import copy
 
 import six
 import yaml
@@ -16,17 +17,39 @@ SPECIAL_CHARACTERS_MAP = {  # defines a key-value for unicode replacement charac
 
 
 class Rule(object):
-    def __init__(self, regex=None, replacement=None, specs=[]):
-        if regex is not None:
-            self.regex = re.compile(regex)
+    flags = []
+
+    def __init__(self, pattern=None, replacement=None, flags=[], specs=[]):
+        if flags is not None:
+            self.flags = flags
+
+        if pattern is not None:
+            self.pattern = pattern
 
         if replacement is not None:
             self.replacement = self._prepare_replacement(replacement)
 
+        self._re = None
         self.specs = specs
 
     def apply(self, text):
-        return self.regex.sub(self.replacement, text)
+        if not self._re:
+            self._compile()
+
+        return self._re.sub(self.replacement, text)
+
+    def _compile(self):
+        """
+        One-time compile of the regex
+        """
+        resulting_re_flags = 0
+        if len(self.flags):
+            flags = copy(self.flags)
+            resulting_re_flags = getattr(re, flags.pop(0))
+            for flag in flags:
+                resulting_re_flags |= getattr(re, flag)
+
+        self._re = re.compile(self.pattern, flags=resulting_re_flags)
 
     def _prepare_replacement(self, replacement):
         """
@@ -41,7 +64,7 @@ class ABRule(Rule):
     """
     A special rule for testing, replaces all a's in text by b's
     """
-    regex = re.compile('a')
+    pattern = 'a'
     replacement = 'b'
 
 
@@ -49,7 +72,8 @@ def load_rules_from(path):
     with open(path, 'rb') as f:
         for rule_name, rule in six.iteritems(yaml.load(f)):
             yield rule_name, Rule(
-                regex=rule['regex'],
+                pattern=rule['pattern'],
                 replacement=rule['replacement'],
+                flags=rule.get('flags'),
                 specs=rule.get('specs')
             )

@@ -1,5 +1,5 @@
 cleanup_before:
-    regex: '\s+'
+    pattern: '\s+'
     replacement: ' '
     specs:
        - "Раз  Тест|Раз Тест"
@@ -7,20 +7,20 @@ cleanup_before:
        - "Раз тест  |Раз тест "
 
 nbsp:
-    regex: '&nbsp;'
+    pattern: '&nbsp;'
     replacement: '_'
     specs:
        - Раз&nbsp;Тест|Раз_Тест
 
 emdash-forced:
-    regex: '-{2,3}'
+    pattern: '-{2,3}'
     replacement: '—'
     specs:
         - -- Test|— Test
         - Test --- Test|Test — Test
 
 emdash-middle:
-    regex: '\s+-\s+'
+    pattern: '\s+-\s+'
     replacement: ' — '
     specs:
         - "Ленин - гриб|Ленин — гриб"

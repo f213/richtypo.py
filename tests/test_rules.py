@@ -14,7 +14,7 @@ except ImportError:
 
 def test_rule_generic():
     r = Rule(
-        regex='b{2}',
+        pattern='b{2}',
         replacement='c'
     )
     assert r.apply('abb') == 'ac'
@@ -22,7 +22,7 @@ def test_rule_generic():
 
 def test_rule_generic_no_match():
     r = Rule(
-        regex='b{2}',
+        pattern='b{2}',
         replacement='c'
     )
     assert r.apply('acc') == 'acc'
@@ -30,11 +30,11 @@ def test_rule_generic_no_match():
 
 def test_rule_applying():
     r1 = Rule(
-        regex='b{2}',
+        pattern='b{2}',
         replacement='cc'
     )
     r2 = Rule(
-        regex='c{2}',
+        pattern='c{2}',
         replacement='dd'
     )
 
@@ -51,11 +51,11 @@ def test_rule_order():
     Check if rules are applyied in order they are supplied
     """
     r1 = Rule(
-        regex='b{2}',
+        pattern='b{2}',
         replacement='cc'
     )
     r2 = Rule(
-        regex='c{2}',
+        pattern='c{2}',
         replacement='dd'
     )
     r = Richtypo()
@@ -72,7 +72,7 @@ def test_rule_loader():
     assert len(rules.keys()) >= 1
 
     rule = rules['cleanup_before']
-    assert rule.regex == re.compile('\s+')
+    assert rule.pattern == '\s+'
     assert rule.replacement == ' '
 
 
@@ -86,11 +86,11 @@ def test_rule_loader_with_non_breaking_spaces():
 def test_get_rule_from_available():
     r = Richtypo()
     r.available_rules = {
-        'b': Rule(regex='b', replacement='d')
+        'b': Rule(pattern='b', replacement='d')
     }
     rule = r._get_rule('b')
 
-    assert rule.regex == re.compile('b')
+    assert rule.pattern == 'b'
 
 
 def test_get_rule_from_predefined_rules():
@@ -100,10 +100,20 @@ def test_get_rule_from_predefined_rules():
     assert rule == ABRule
 
 
+def test_rule_flags():
+    rule = Rule(pattern='A', replacement='b')
+    rule._compile()
+    assert rule._re == re.compile('A', flags=0)
+
+    rule.flags = ['I']
+    rule._compile()
+    assert rule._re == re.compile('A', flags=re.I)
+
+
 def test_parse_ruleset():
     r = Richtypo(ruleset='nonexistant')
     r.available_rules = {
-        'b': Rule(regex='b', replacement='d')
+        'b': Rule(pattern='b', replacement='d')
     }
 
     with patch('richtypo.Richtypo._get_ruleset') as get_ruleset:
@@ -121,3 +131,8 @@ def test_ruleset_input_param(get_ruleset):
     r = Richtypo(ruleset='generic')  # this ruleset realy should exist
     assert len(r.rules) == 1
     assert ABRule in r.rules
+
+
+def test_rule_loading_by_default():
+    r = Richtypo()
+    assert len(r.available_rules.keys()) >= 1

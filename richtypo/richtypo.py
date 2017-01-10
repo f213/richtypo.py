@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import os
 import re
 
 import six
@@ -25,7 +26,7 @@ class Richtypo(object):
         'code'
     ]
 
-    def __init__(self, bypass_tags=bypass_tags, lang=[], ruleset=''):
+    def __init__(self, bypass_tags=bypass_tags, lang=['generic'], ruleset=''):
         self.save_tags_re = []
         self.rules = []
         self.available_rules = {}
@@ -33,6 +34,9 @@ class Richtypo(object):
         for tag in bypass_tags:
             self.save_tags_re.append(self._tag_bypass_regex(tag))
         self.save_tags_re.append(re.compile(r'<([^>]+)>'))  # generic regex to strip all <tags>
+
+        for lang in lang:
+            self.load_rules(lang)
 
         self.parse_ruleset(ruleset)
 
@@ -93,3 +97,9 @@ class Richtypo(object):
             rule = self._get_rule(r)
             if rule is not None:
                 self.rules.append(rule)
+
+    def load_rules(self, path):
+        for rule_name, rule in rules.load_rules_from(os.path.join('rules', path + '.yaml')):
+            rule_name = '%s:%s' % (path, rule_name)
+            if self.available_rules.get(rule_name) is None:
+                self.available_rules[rule_name] = rule
