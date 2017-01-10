@@ -15,7 +15,6 @@ NBSP = u'\xa0'
 
 
 SPECIAL_CHARACTERS_MAP = {  # defines a key-value for unicode replacement characters, used in YAML
-
     '_': NBSP               # Test_Phrase maps to Test&nbsp;Phrase
 }
 
@@ -47,6 +46,7 @@ class Rule(object):
         One-time compile of the regex
         """
         resulting_re_flags = 0
+
         if six.PY2:
             resulting_re_flags |= re.UNICODE
 
@@ -62,6 +62,7 @@ class Rule(object):
         """
         for p, r in six.iteritems(SPECIAL_CHARACTERS_MAP):
             replacement = replacement.replace(p, r)
+
         return replacement
 
 
@@ -73,8 +74,12 @@ class ABRule(Rule):
     replacement = 'b'
 
 
-def load_rules_for(ruledef):
+def load_from_file(ruledef):
+    """
+    Load rules from file
+    """
     path = os.path.join('rules', ruledef + '.yaml')
+
     with open(path, 'rb') as f:
         for rule_name, rule in six.iteritems(yaml.load(f)):
             yield rule_name, Rule(

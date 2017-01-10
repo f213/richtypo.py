@@ -99,20 +99,21 @@ def test_rule_flags():
     assert rule._re == re.compile('A', flags=reference_flags | re.I)
 
 
-def test_build_rule_chain():
-    r = Richtypo(ruleset='nonexistant')
+@patch('richtypo.Richtypo._get_ruleset_rules')
+def test_build_rule_chain(rules):
+    r = Richtypo()
     r.available_rules = {
         'b': Rule(pattern='b', replacement='d')
     }
 
-    with patch('richtypo.Richtypo._get_ruleset') as get_ruleset:
-        get_ruleset.return_value = ['b', ABRule]
+    with patch('richtypo.Richtypo._get_ruleset_rules') as rules:
+        rules.return_value = ['b', ABRule]
 
         r.build_rule_chain('generic')
         assert len(r.rules) == 2
 
 
-@patch('richtypo.Richtypo._get_ruleset')
+@patch('richtypo.Richtypo._get_ruleset_rules')
 def test_ruleset_input_param(get_ruleset):
     get_ruleset.return_value = [
         ABRule,

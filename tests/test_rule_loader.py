@@ -1,7 +1,7 @@
 # -*- coding: utf-8
 
 from richtypo import Richtypo
-from richtypo.rules import load_rules_for
+from richtypo.rules import load_from_file
 
 try:
     from unittest.mock import patch
@@ -10,7 +10,7 @@ except ImportError:
 
 
 def test_rule_loader():
-    rules = dict(load_rules_for('generic'))
+    rules = dict(load_from_file('generic'))
 
     assert len(rules.keys()) >= 1
 
@@ -20,27 +20,27 @@ def test_rule_loader():
 
 
 def test_rule_loader_with_non_breaking_spaces():
-    rules = dict(load_rules_for('generic'))
+    rules = dict(load_from_file('generic'))
 
     nbsp = rules['nbsp']
     assert nbsp.replacement == u'\xa0'
 
 
-@patch('richtypo.Richtypo._get_ruleset')
-def test_loading_generic_ruledef(get_ruleset):
+@patch('richtypo.Richtypo._get_ruleset_rules')
+def test_loading_generic_ruledef(rules):
     """
     If not specified, all rules should be taken from the generic ruledef (rules/generic.yaml)
     """
-    get_ruleset.return_value = ['one', 'two']
+    rules.return_value = ['one', 'two']
 
     with patch('richtypo.Richtypo.build_rule_chain'):  # dont actualy build rule chain
-        with patch('richtypo.Richtypo.load_ruledef') as load_ruledef:
+        with patch('richtypo.Richtypo._load_rules_from_file') as loader:
             Richtypo()
-            assert load_ruledef.call_count == 1
-            load_ruledef.assert_called_with('generic')
+            assert loader.call_count == 1
+            loader.assert_called_with('generic')
 
 
-@patch('richtypo.Richtypo._get_ruleset')
+@patch('richtypo.Richtypo._get_ruleset_rules')
 def test_loading_specified_ruledef(get_ruleset):
     """
     Check for loading specified ruledef
@@ -52,13 +52,13 @@ def test_loading_specified_ruledef(get_ruleset):
     get_ruleset.return_value = ['ru: test']
 
     with patch('richtypo.Richtypo.build_rule_chain'):  # dont actualy build rule chain
-        with patch('richtypo.Richtypo.load_ruledef') as load_ruledef:
+        with patch('richtypo.Richtypo._load_rules_from_file') as loader:
             Richtypo()
-            assert load_ruledef.call_count == 1
-            load_ruledef.assert_called_with('ru')
+            assert loader.call_count == 1
+            loader.assert_called_with('ru')
 
 
-@patch('richtypo.Richtypo._get_ruleset')
+@patch('richtypo.Richtypo._get_ruleset_rules')
 def test_loading_ruledef_only_once(get_ruleset):
     """
     Check if ruledefs are loaded only once
@@ -66,8 +66,8 @@ def test_loading_ruledef_only_once(get_ruleset):
     get_ruleset.return_value = ['ru:test', 'tst-ruledef:test', 'ru:test1', 'ru:test2']
 
     with patch('richtypo.Richtypo.build_rule_chain'):  # dont actualy build rule chain
-        with patch('richtypo.Richtypo.load_ruledef') as load_ruledef:
+        with patch('richtypo.Richtypo._load_rules_from_file') as loader:
             Richtypo()
-            assert load_ruledef.call_count == 2  #
-            load_ruledef.assert_any_call('ru')
-            load_ruledef.assert_any_call('tst-ruledef')
+            assert loader.call_count == 2  #
+            loader.assert_any_call('ru')
+            loader.assert_any_call('tst-ruledef')
