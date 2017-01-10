@@ -9,8 +9,6 @@ from richtypo import rules
 
 
 class Richtypo(object):
-    text = ''
-
     rulesets = {
         'generic': [
             'cleanup_before',
@@ -45,18 +43,16 @@ class Richtypo(object):
     ]
 
     def __init__(self, bypass_tags=bypass_tags, ruleset='generic'):
-        self.save_tags_re = []
         self.rules = []
         self.available_rules = {}
 
+        self.save_tags_re = []
         for tag in bypass_tags:
             self.save_tags_re.append(self._tag_bypass_regex(tag))
         self.save_tags_re.append(re.compile(r'<([^>]+)>'))  # generic regex to strip all <tags>
 
         self.load_rules_for_ruleset(ruleset)
         self.build_rule_chain(ruleset)
-
-        self.saved_tags = []
 
     def richtypo(self, text):
         """
@@ -69,34 +65,6 @@ class Richtypo(object):
         self.restore_tags()
 
         return self.text
-
-    def _get_rule(self, rule):
-        """
-        Finds the rule in the list of loaded rules. Raises KeyError if rule is not found.
-
-        Rules can by two types — string name (like 'emdash') or a classname
-        of special rule defined in richtypo.rules (like StripDashes).
-
-        String rules have prefixes of files, from which they were loaded, i.e. rule
-        loaded from `rules/ru.yaml` and called `emdash` can be found by name 'ru:emdash'.
-
-        There is only one exception — you can find rules loaded from `rules/generic.yaml`
-        without the 'generic:' prefix, simply 'cleanup_before'.
-        """
-        if isinstance(rule, six.string_types):
-            try:
-                return self.available_rules[rule]
-            except KeyError:
-                try:
-                    return self.available_rules['generic:' + rule]
-                except KeyError:
-                    raise KeyError('Rule not found:', rule)
-
-        else:
-            if issubclass(rule, rules.Rule):
-                return rule
-            else:
-                raise KeyError('Got unkown special rule reference', rule)
 
     @classmethod
     def _get_ruleset_rules(cls, ruleset):
@@ -130,10 +98,38 @@ class Richtypo(object):
     def _tag_bypass_regex(cls, tag):
         return re.compile(r'<(%s[^>]*>.+</%s)>' % (tag, tag), flags=re.MULTILINE | re.DOTALL)
 
+    def _get_rule(self, rule):
+        """
+        Finds the rule in the list of loaded rules. Raises KeyError if rule is not found.
+
+        Rules are devided into two types — string name (like `'emdash'`) or a class name
+        of rule defined in richtypo.rules (like `StripDashes`).
+
+        String rules have prefixes of files, from which they were loaded, i.e. rule
+        loaded from `rules/ru.yaml` and called `emdash` can be found by name 'ru:emdash'.
+        There is only one exception — you can find rules loaded from `rules/generic.yaml`
+        without the 'generic:' prefix, simply `'cleanup_before'`.
+        """
+        if isinstance(rule, six.string_types):
+            try:
+                return self.available_rules[rule]
+            except KeyError:
+                try:
+                    return self.available_rules['generic:' + rule]
+                except KeyError:
+                    raise KeyError('Rule not found:', rule)
+
+        else:
+            if issubclass(rule, rules.Rule):
+                return rule
+            else:
+                raise KeyError('Got unkown rule reference', rule)
+
     def strip_tags(self):
         """
         Replace all tags with ~<tag_num>~
         """
+        self.saved_tags = []
         replacement_count = {'n': 0}  # a dict to replace `nonlocal` keyword for py2
 
         def repl(m):
