@@ -2,26 +2,41 @@ cleanup_before:
     pattern: '\s+'
     replacement: ' '
     specs:
-       - "Раз  Тест|Раз Тест"
-       - "  Раз тест| Раз тест"
-       - "Раз тест  |Раз тест "
+     - "Раз  Тест|Раз Тест"
+     - "  Раз тест| Раз тест"
+     - "Раз тест  |Раз тест "
 
 nbsp:
     pattern: '&nbsp;'
     replacement: '_'
     specs:
-       - Раз&nbsp;Тест|Раз_Тест
+     - Раз&nbsp;Тест|Раз_Тест
 
 emdash-forced:
     pattern: '-{2,3}'
     replacement: '—'
     specs:
-        - -- Test|— Test
-        - Test --- Test|Test — Test
+      - -- Test|— Test
+      - Test --- Test|Test — Test
 
 emdash-middle:
     pattern: '\s+-\s+'
     replacement: ' — '
     specs:
-        - "Ленин - гриб|Ленин — гриб"
-        - Ленин-гриб|Ленин-гриб
+      - "Ленин - гриб|Ленин — гриб"
+      - Ленин-гриб|Ленин-гриб
+
+hanging_emdash:
+  pattern: '\s+—'
+  replacement: '_—'
+  specs:
+    - "Ленин — гриб|Ленин_— гриб"
+
+numbers:
+  pattern: '(\d+)\s+'
+  flags:
+    - I
+  replacement: '\1_'
+  specs:
+    - "1 января — самый спокойный день в году|1_января — самый спокойный день в году"
+    - '3 мумзика пячили 84 бутявки|3_мумзика пячили 84_бутявки'

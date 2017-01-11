@@ -14,16 +14,23 @@ class Richtypo(object):
             'cleanup_before',
             'emdash-forced',
             'emdash-middle',
-            'nbsp',
+            'generic:nbsp',
+            'generic:hanging_emdash',
         ],
         'ru-lite': [
             'cleanup_before',
             'emdash-forced',
             'emdash-middle',
 
-            'ru:hanging_pretexts',
+            'generic:numbers',
 
-            'nbsp',
+            'ru:hanging_pretexts',
+            'ru:hanging_unions',
+            'ru:hanging_particles',
+            'ru:year',
+
+            'generic:nbsp',
+            'generic:hanging_emdash',
         ],
         'en-lite': [
             'cleanup_before',
@@ -32,7 +39,8 @@ class Richtypo(object):
 
             'en:hanging_pretexts',
 
-            'nbsp',
+            'generic:nbsp',
+            'generic:hanging_emdash',
         ],
     }
 
