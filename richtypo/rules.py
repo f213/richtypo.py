@@ -1,5 +1,5 @@
 # -*- coding: utf-8
-import os
+from os import path
 import re
 
 import six
@@ -78,9 +78,8 @@ def load_from_file(ruledef):
     """
     Load rules from file
     """
-    path = os.path.join('rules', ruledef + '.yaml')
-
-    with open(path, 'rb') as f:
+    file = path.join(path.dirname(__file__), 'rules', ruledef + '.yaml')
+    with open(file, 'rb') as f:
         for rule_name, rule in six.iteritems(yaml.load(f)):
             yield rule_name, Rule(
                 pattern=rule['pattern'],
