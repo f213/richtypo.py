@@ -5,11 +5,6 @@ from os import path
 import six
 import yaml
 
-try:
-    from string import maketrans
-except ImportError:
-    maketrans = str.maketrans
-
 
 NBSP = u'\xa0'
 
