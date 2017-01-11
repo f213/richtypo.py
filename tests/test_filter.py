@@ -1,6 +1,21 @@
 # -*- coding: utf-8
 from richtypo.filter import filter
 
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
+
+
+@patch('richtypo.filter.richtypo.Richtypo._get_ruleset_rules')
+def test_filter_caching(rules):
+    rules.return_value = []
+    with patch('richtypo.filter.richtypo.Richtypo.load_rules_for_ruleset') as loader:
+        for i in range(0, 10):
+            filter(u'a -- b', 'some-ruleset') == u'a — b'
+
+        assert loader.call_count == 1  # rules should be loaded from file only once
+
 
 def test_filter():
     from richtypo.rules import NBSP

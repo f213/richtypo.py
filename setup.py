@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name='richtypo',
@@ -13,6 +13,7 @@ setup(
     install_requires=[
         'six',
         'PyYAML',
+        'backports.functools-lru-cache',
     ],
     include_package_data=True,
     zip_safe=False,
