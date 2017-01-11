@@ -97,3 +97,5 @@ ENV/
 # End of https://www.gitignore.io/api/python
 #
 MANIFEST
+
+port_to_blog.sh
