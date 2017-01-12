@@ -1,5 +1,8 @@
 # Richtypo — the only web typograph that don't make a mess out of your text
 
+[![Build Status](https://travis-ci.org/f213/richtypo.py.svg?branch=master)](https://travis-ci.org/f213/richtypo.py)
+[![codecov](https://codecov.io/gh/f213/richtypo.py/branch/master/graph/badge.svg)](https://codecov.io/gh/f213/richtypo.py)
+
 Richtypo assumes that your text already has right dashes and quotes. The main concern is to add
 non-breaking spaces to the right places.
 
