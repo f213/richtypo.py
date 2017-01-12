@@ -7,7 +7,7 @@ This project is heavily inspired by Artem Sapegin's [richtypo](https://github.co
 
 ## Features
 
-- Blazing fast, aimed for render-time use.
+- Blazing fast, aimed for render-time usage.
 - Native Russian support.
 - HTML and Markdown aware, does not break your markup.
 - Your text stays readable and indexable — richtypo does not produce HTML entities and other messy stuff.
@@ -74,7 +74,6 @@ Template:
 
 {{ object.text | richtypo:"ru-lite"}}
 ```
-
 
 ## License
 
