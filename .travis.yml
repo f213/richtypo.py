@@ -4,4 +4,6 @@ python:
     - 3.4
     - 3.5
 
-script: pytest
+script: py.test --cov=./
+after_success:
+      - bash <(curl -s https://codecov.io/bash)
