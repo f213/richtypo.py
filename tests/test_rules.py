@@ -99,6 +99,11 @@ def test_rule_flags():
     assert rule._re == re.compile('A', flags=reference_flags | re.I)
 
 
+def test_all_occurancies_are_replaced():
+    rule = Rule(pattern='(a|b)', replacement=r'\1c')
+    assert rule.apply('aab') == 'acacbc'
+
+
 @patch('richtypo.Richtypo._get_ruleset_rules')
 def test_build_rule_chain(rules):
     r = Richtypo()

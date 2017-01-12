@@ -5,7 +5,6 @@ from os import path
 import six
 import yaml
 
-
 NBSP = u'\xa0'
 
 
@@ -25,7 +24,9 @@ class Rule(object):
             self.pattern = pattern
 
         if replacement is not None:
-            self.replacement = self._prepare_replacement(replacement)
+            self.replacement = replacement
+
+        self.replacement = self._translate_special_chars(replacement)
 
         self._re = None
         self.specs = specs
@@ -51,14 +52,14 @@ class Rule(object):
 
         self._re = re.compile(self.pattern, flags=resulting_re_flags)
 
-    def _prepare_replacement(self, replacement):
+    def _translate_special_chars(self, text):
         """
         Unicode non-breaking spaces are marked as '_' in the config
         """
         for p, r in six.iteritems(SPECIAL_CHARACTERS_MAP):
-            replacement = replacement.replace(p, r)
+            text = text.replace(p, r)
 
-        return replacement
+        return text
 
 
 class ABRule(Rule):

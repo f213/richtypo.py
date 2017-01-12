@@ -21,4 +21,4 @@ def test_rule_specs(rule_name, rule):
         got = rule.apply(input)
         got = _replace_unicode_back_to_special_characters(got)
 
-        assert got == expected, 'Rule: %s' % rule_name
+        assert got == expected, 'Rule: %s, Pattern: %s' % (rule_name, rule.pattern)
