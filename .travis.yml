@@ -4,4 +4,4 @@ python:
     - 3.4
     - 3.5
 
-script: test
+script: pytest
