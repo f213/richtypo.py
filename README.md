@@ -12,7 +12,7 @@ This project is heavily inspired by Artem Sapegin's [richtypo](https://github.co
 
 - Blazing fast, aimed for render-time usage.
 - Native Russian support.
-- HTML and Markdown aware, does not break your markup.
+- HTML, Markdown and Plain-text aware, does not break your markup.
 - Your text stays readable and indexable — richtypo does not produce HTML entities and other messy stuff.
 - Easy integration with Jinja2, Django templates and any other language.
 - Well tested Python3 and Python2 support. For py2 only unicode input is accepted.

@@ -38,6 +38,7 @@ class Richtypo(object):
             'emdash-middle',
 
             'en:hanging_pretexts',
+            'en:hanging_articles',
 
             'generic:nbsp',
             'generic:hanging_emdash',
