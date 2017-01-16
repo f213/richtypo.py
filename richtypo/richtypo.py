@@ -40,6 +40,7 @@ class Richtypo(object):
             'en:hanging_pretexts',
             'en:hanging_articles',
             'en:hanging_pronouns',
+            'en:hanging_to_be',
 
             'generic:nbsp',
             'generic:hanging_emdash',

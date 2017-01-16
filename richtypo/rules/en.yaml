@@ -24,3 +24,12 @@ hanging_pronouns:
   specs:
     - "By her Magesty|By her_Magesty"
     - "Its food is in the can|Its_food is in the can"
+
+hanging_to_be:
+  pattern: '(?<=\b)(be|am|are|were|was|been|i.m)\s'
+  flags:
+    - I
+  replacement: '\1_'
+  specs:
+    - "I am the greatest!|I am_the greatest!"
+    - "I'm the greatest!|I'm_the greatest!"
