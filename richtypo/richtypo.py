@@ -39,6 +39,7 @@ class Richtypo(object):
 
             'en:hanging_pretexts',
             'en:hanging_articles',
+            'en:hanging_pronouns',
 
             'generic:nbsp',
             'generic:hanging_emdash',

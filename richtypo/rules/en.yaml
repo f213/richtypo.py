@@ -15,3 +15,12 @@ hanging_articles:
   specs:
     - "The master of puppets| The_master of puppets"
     - "With an elevator|With an_elevator"
+
+hanging_pronouns:
+  pattern: '(?<=\b)(i|me|my|mine|you|your|yours|hi|him|his|she|her|hers|it|its|we|us|our|ours|they|them|their|theirs)\s+'
+  flags:
+    - I
+  replacement: '\1_'
+  specs:
+    - "By her Magesty|By her_Magesty"
+    - "Its food is in the can|Its_food is in the can"

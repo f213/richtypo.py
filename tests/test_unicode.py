@@ -11,7 +11,7 @@ def test_russian_simple():
 
 def test_unicode_with_ascii_only_characters():
     """
-    If this test does not fail, and the above test is failing
+    If this test does not fail, and the above test does,
     then i've messed up with unicode
     """
     r = Richtypo(ruleset='en-lite')
