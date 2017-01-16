@@ -6,7 +6,7 @@ def pytest_generate_tests(metafunc):
     if 'rule_name' in metafunc.fixturenames:
         from richtypo.rules import load_from_file
         rules = []
-        for ruledef in ['generic', 'ru']:
+        for ruledef in ['generic', 'ru', 'en']:
             rules += [(name, rule) for name, rule in load_from_file(ruledef)]
 
         metafunc.parametrize('rule_name, rule', rules)

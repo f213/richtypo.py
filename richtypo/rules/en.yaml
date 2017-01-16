@@ -4,7 +4,7 @@ hanging_pretexts:
     - I
   replacement: '\1_'
   specs:
-    - "From russia with love|From_russia_with_love"
+    - "From russia with love|From_russia with love"
     - "From 2 to 3|From_2 to_3"
 
 hanging_articles:
@@ -13,7 +13,7 @@ hanging_articles:
     - I
   replacement: '\1_'
   specs:
-    - "The master of puppets| The_master of puppets"
+    - "The master of puppets|The_master of puppets"
     - "With an elevator|With an_elevator"
 
 hanging_pronouns:
