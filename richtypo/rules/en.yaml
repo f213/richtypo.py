@@ -26,10 +26,20 @@ hanging_pronouns:
     - "Its food is in the can|Its_food is in the can"
 
 hanging_to_be:
-  pattern: '(?<=\b)(be|am|are|were|was|been|i.m)\s'
+  pattern: '(?<=\b)(be|am|are|were|was|been|i.m)\s+'
   flags:
     - I
   replacement: '\1_'
   specs:
     - "I am the greatest!|I am_the greatest!"
     - "I'm the greatest!|I'm_the greatest!"
+
+hanging_numbers:
+  pattern: '(?<=\b)(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|\w+teen|twenty|thirty|fourty|fifty|sixty|seventy|eighty|ninety)\s+'
+  flags:
+    - I
+  replacement: '\1_'
+  specs:
+    - "One sheep|One_sheep"
+    - "Fifteen sheeps|Fifteen_sheeps"
+    - "One hundred and twenty one sheeps|One_hundred and twenty_one_sheeps"
