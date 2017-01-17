@@ -27,6 +27,7 @@ class Richtypo(object):
             'ru:hanging_pretexts',
             'ru:hanging_unions',
             'ru:hanging_particles',
+            'ru:hanging_pronouns',
             'ru:year',
 
             'generic:nbsp',
