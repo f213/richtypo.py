@@ -113,7 +113,7 @@ class Richtypo(object):
         cls.strip_tag_regexps = []
 
         cls.strip_tag_regexps.append(
-            re.compile(r'(~[^~]+~)')  # strip all ~stuff~ occurences, because this mark is used by richtypo
+            re.compile(r'(~+[^~]+~+)')  # strip all ~stuff~ occurences, because this mark is used by richtypo
         )
 
         for tag in cls.bypass_tags:
@@ -172,8 +172,8 @@ class Richtypo(object):
         """
         Restore tags, stripped by strip_tags
         """
-        restore_tags = re.compile(r'~([^~]+)~')
-        self.text = restore_tags.sub(lambda m: self.saved_tags.pop(m.group(0).replace('~', '')), self.text)
+        restore_tags = re.compile(r'~(?P<saved_tag_id>[^~]+)~')  # find each tag uuid
+        self.text = restore_tags.sub(lambda m: self.saved_tags.pop(m.group('saved_tag_id')), self.text)  # and replace it from self.saved_tags dict
 
     def apply_rule_chain(self):
         for rule in self.rules:

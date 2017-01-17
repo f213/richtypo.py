@@ -28,14 +28,6 @@ def test_strip_tags_simple(input, expected):
     assert expected.match(r.text)
 
 
-def test_strip_tags_when_input_already_contains_richtypo_marks():
-    r = Richtypo()
-    r.text = 'test <h1> ~dff~'
-    r.strip_tags()
-    r.restore_tags()
-    assert r.text == 'test <h1> ~dff~'
-
-
 @pytest.mark.parametrize("input", [
     '<h1>test</h1>',
     '<h1>тест</h1>',
@@ -129,3 +121,16 @@ def test_restore_tags_in_scripts(input):
     r.strip_tags()
     r.restore_tags()
     assert r.text == input
+
+
+@pytest.mark.parametrize("input, expected", [
+    ('test <h1> ~dff~', 'test <h1> ~dff~'),
+    ('test <h1>~~dff~~</h1>', 'test <h1>~~dff~~</h1>'),
+    ('test <h1> ~~dff~x~', 'test <h1> ~~dff~x~'),
+])
+def test_strip_tags_when_input_already_contains_richtypo_marks(input, expected):
+    r = Richtypo()
+    r.text = input
+    r.strip_tags()
+    r.restore_tags()
+    assert r.text == expected
