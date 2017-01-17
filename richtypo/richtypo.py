@@ -60,7 +60,7 @@ class Richtypo(object):
         self.rules = []
         self.available_rules = {}
 
-        self.init_tag_bypass()
+        self.init_tag_regexes()
 
         self.load_rules_for_ruleset(ruleset)
         self.build_rule_chain(ruleset)
@@ -106,15 +106,24 @@ class Richtypo(object):
                     yield ruledef
 
     @classmethod
-    def init_tag_bypass(cls):
-        def tag_bypass_regex(tag):
-            return re.compile(r'(<%s[^>]*>.+</%s>)' % (tag, tag), flags=re.MULTILINE | re.DOTALL)
+    def init_tag_regexes(cls):
+        """
+        Build a list of regexps used by strip_tags()
+        """
+        cls.strip_tag_regexps = []
 
-        cls.save_tags_re = []
+        cls.strip_tag_regexps.append(
+            re.compile(r'(~[^~]+~)')  # strip all ~stuff~ occurences, because this mark is used by richtypo
+        )
 
-        cls.save_tags_re.append(re.compile(r'(~[^~]+~)'))
-        cls.save_tags_re += [tag_bypass_regex(tag) for tag in cls.bypass_tags]
-        cls.save_tags_re.append(re.compile(r'(<[^>]+>)'))  # generic regex to strip all <tags>
+        for tag in cls.bypass_tags:
+            cls.strip_tag_regexps.append(
+                re.compile(r'(<%s[^>]*>.+</%s>)' % (tag, tag), flags=re.MULTILINE | re.DOTALL)  # add a regex for every tag in a list of tags to bypass
+            )
+
+        cls.strip_tag_regexps.append(
+            re.compile(r'(<[^>]+>)')  # generic regex to strip all <tags>
+        )
 
     def _get_rule(self, rule):
         """
@@ -156,7 +165,7 @@ class Richtypo(object):
 
             return '~%s~' % uuid
 
-        for regex in self.save_tags_re:
+        for regex in self.strip_tag_regexps:
             self.text = regex.sub(repl, self.text)
 
     def restore_tags(self):
