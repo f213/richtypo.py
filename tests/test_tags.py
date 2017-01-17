@@ -1,5 +1,7 @@
 # -*- coding: utf-8
 
+import re
+
 import pytest
 
 from richtypo import Richtypo
@@ -14,12 +16,24 @@ from richtypo import Richtypo
     ('<H1>test</H1>', '~1~test~2~'),
     ('<h1>test<h1>', '~1~test~2~'),
     ('<h1><1>test</h1>', '~1~~2~test~3~'),
+    ('<p>test is a <a class="testclass">test link</a></p>', '~1~test is a ~2~test link~3~~4~'),
 ])
 def test_strip_tags_simple(input, expected):
     r = Richtypo()
     r.text = input
     r.strip_tags()
-    assert r.text == expected
+
+    expected = re.sub(r'~(\d+)~', '~([^~]+)~', expected)  # it is a regex now
+    expected = re.compile(expected)
+    assert expected.match(r.text)
+
+
+def test_strip_tags_when_input_already_contains_richtypo_marks():
+    r = Richtypo()
+    r.text = 'test <h1> ~dff~'
+    r.strip_tags()
+    r.restore_tags()
+    assert r.text == 'test <h1> ~dff~'
 
 
 @pytest.mark.parametrize("input", [
@@ -32,6 +46,7 @@ def test_strip_tags_simple(input, expected):
     '<h1>test<h1>',
     '<h1><3>test</h1>',
     '<h1><10>test</h1>',
+    '<p>test is a <a class="testclass">test link</a></p>',
 ])
 def test_restore_tags(input):
     r = Richtypo()
@@ -78,7 +93,10 @@ def test_strip_tags_in_scripts(input, expected):
     r = Richtypo()
     r.text = input
     r.strip_tags()
-    assert r.text == expected
+
+    expected = re.sub(r'~(\d+)~', '~([^~]+)~', expected)  # it is a regex now
+    expected = re.compile(expected)
+    assert expected.match(r.text)
 
 
 @pytest.mark.parametrize("input", [
@@ -95,6 +113,13 @@ def test_strip_tags_in_scripts(input, expected):
             script_code()
     </script>
     <h1>test</h1>
+    """,
+    """
+    <p>This is my fancy code:
+        <div class="code">
+            <code>Test();</code>
+        </div>
+    </p>
     """,
 ])
 def test_restore_tags_in_scripts(input):

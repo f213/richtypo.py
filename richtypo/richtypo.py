@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 import re
+from uuid import uuid4
 
 import six
 
@@ -107,10 +108,13 @@ class Richtypo(object):
     @classmethod
     def init_tag_bypass(cls):
         def tag_bypass_regex(tag):
-            return re.compile(r'<(%s[^>]*>.+</%s)>' % (tag, tag), flags=re.MULTILINE | re.DOTALL)
+            return re.compile(r'(<%s[^>]*>.+</%s>)' % (tag, tag), flags=re.MULTILINE | re.DOTALL)
 
-        cls.save_tags_re = [tag_bypass_regex(tag) for tag in cls.bypass_tags]
-        cls.save_tags_re.append(re.compile(r'<([^>]+)>'))  # generic regex to strip all <tags>
+        cls.save_tags_re = []
+
+        cls.save_tags_re.append(re.compile(r'(~[^~]+~)'))
+        cls.save_tags_re += [tag_bypass_regex(tag) for tag in cls.bypass_tags]
+        cls.save_tags_re.append(re.compile(r'(<[^>]+>)'))  # generic regex to strip all <tags>
 
     def _get_rule(self, rule):
         """
@@ -143,15 +147,14 @@ class Richtypo(object):
         """
         Replace all tags with ~<tag_num>~
         """
-        self.saved_tags = []
-        replacement_count = {'n': 0}  # a dict to replace `nonlocal` keyword for py2
+        self.saved_tags = {}
 
         def repl(m):
             tag = m.group(1)
-            self.saved_tags.append(tag)
+            uuid = uuid4()
+            self.saved_tags[str(uuid)] = tag
 
-            replacement_count['n'] += 1
-            return '~%d~' % replacement_count['n']
+            return '~%s~' % uuid
 
         for regex in self.save_tags_re:
             self.text = regex.sub(repl, self.text)
@@ -160,9 +163,8 @@ class Richtypo(object):
         """
         Restore tags, stripped by strip_tags
         """
-        restore_tags = re.compile(r'~(\d+)~')
-
-        self.text = restore_tags.sub(lambda f: '<%s>' % self.saved_tags.pop(0), self.text)
+        restore_tags = re.compile(r'~([^~]+)~')
+        self.text = restore_tags.sub(lambda m: self.saved_tags.pop(m.group(0).replace('~', '')), self.text)
 
     def apply_rule_chain(self):
         for rule in self.rules:
