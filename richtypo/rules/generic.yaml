@@ -32,6 +32,20 @@ hanging_emdash:
   specs:
     - "Ленин — гриб|Ленин_— гриб"
 
+punctuation_spaces:
+  pattern: '\s+([\,\.\!\?:;])\s*'
+  replacement: '\1 '
+  specs:
+    - "Ленин — гриб .|Ленин — гриб. "
+    - "Ленин — гриб . А Путин — краб.|Ленин — гриб. А Путин — краб."
+
+spaces_eol:
+  pattern: '\s+(?=\Z)'
+  replacement: ''
+  specs:
+    - "Ленин — гриб. |Ленин — гриб."
+    - "Ленин — гриб. А Путин — Краб.|Ленин — гриб. А Путин — Краб."  # shouldn't break it
+
 numbers:
   pattern: '(\d+)\s+'
   flags:

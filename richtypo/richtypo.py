@@ -17,6 +17,8 @@ class Richtypo(object):
             'emdash-middle',
             'generic:nbsp',
             'generic:hanging_emdash',
+            'generic:punctuation_spaces',
+            'generic:spaces_eol',
         ],
         'ru-lite': [
             'cleanup_before',
@@ -31,6 +33,8 @@ class Richtypo(object):
             'ru:hanging_pronouns',
             'ru:year',
 
+            'generic:punctuation_spaces',
+            'generic:spaces_eol',
             'generic:nbsp',
             'generic:hanging_emdash',
         ],
@@ -45,6 +49,8 @@ class Richtypo(object):
             'en:hanging_to_be',
             'en:hanging_numbers',
 
+            'generic:punctuation_spaces',
+            'generic:spaces_eol',
             'generic:numbers',
             'generic:nbsp',
             'generic:hanging_emdash',
