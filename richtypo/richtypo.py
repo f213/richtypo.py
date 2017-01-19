@@ -45,6 +45,7 @@ class Richtypo(object):
             'en:hanging_to_be',
             'en:hanging_numbers',
 
+            'generic:numbers',
             'generic:nbsp',
             'generic:hanging_emdash',
         ],

@@ -16,4 +16,4 @@ def test_unicode_with_ascii_only_characters():
     """
     r = Richtypo(ruleset='en-lite')
     text = u'2 to 3'
-    assert r.richtypo(text) == u'2 to%s3' % NBSP
+    assert r.richtypo(text) == u'2%sto%s3' % (NBSP, NBSP)

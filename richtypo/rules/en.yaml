@@ -1,10 +1,10 @@
 hanging_pretexts:
-  pattern: '(?<=\b)(to|from|for|at|on|of|so)\s+'
+  pattern: '(?<=\b)(to|from|for|at|on|of|so|in|with|as)\s+'
   flags:
     - I
   replacement: '\1_'
   specs:
-    - "From russia with love|From_russia with love"
+    - "From russia with love|From_russia with_love"
     - "From 2 to 3|From_2 to_3"
 
 hanging_articles:
@@ -26,7 +26,7 @@ hanging_pronouns:
     - "Its food is in the can|Its_food is in the can"
 
 hanging_to_be:
-  pattern: '(?<=\b)(be|am|are|were|was|been|i.m)\s+'
+  pattern: '(?<=\b)(be|am|are|were|was|been|i.m|is|has)\s+'
   flags:
     - I
   replacement: '\1_'
