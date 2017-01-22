@@ -31,6 +31,7 @@ class Richtypo(object):
             'ru:hanging_unions',
             'ru:hanging_particles',
             'ru:hanging_pronouns',
+            'ru:at_least',
             'ru:year',
 
             'generic:punctuation_spaces',
