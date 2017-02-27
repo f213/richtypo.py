@@ -19,6 +19,7 @@ class Richtypo(object):
             'generic:hanging_emdash',
             'generic:punctuation_spaces',
             'generic:spaces_eol',
+            'generic:multiple_spaces',
         ],
         'ru-lite': [
             'cleanup_before',
@@ -36,6 +37,7 @@ class Richtypo(object):
 
             'generic:punctuation_spaces',
             'generic:spaces_eol',
+            'generic:multiple_spaces',
             'generic:nbsp',
             'generic:hanging_emdash',
         ],
@@ -52,6 +54,7 @@ class Richtypo(object):
 
             'generic:punctuation_spaces',
             'generic:spaces_eol',
+            'generic:multiple_spaces',
             'generic:numbers',
             'generic:nbsp',
             'generic:hanging_emdash',
