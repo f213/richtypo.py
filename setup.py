@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='richtypo',
-    version='0.2.2',
+    version='0.2.3',
     description="The only web typograph that don't make a mess out of your text. Russian and English supported.",
     keywords=['typography', 'spaces', 'nbsp', 'russian', 'markdown', ],
     url="https://github.com/f213/richtypo.py",
