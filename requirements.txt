@@ -4,7 +4,7 @@ flake8==3.2.1
 isort==4.2.5
 mccabe==0.5.3
 mock==2.0.0
-pbr==1.10.0
+pbr==5.4.5
 pluggy==0.4.0
 py==1.4.32
 pycodestyle==2.2.0
