@@ -1,4 +1,4 @@
-# Richtypo — the only web typograph that don't make a mess out of your text
+# Richtypo — the only web typograph tool that don't make a mess out of your text
 
 Richtypo assumes that your text already has right dashes and quotes. The main concern is to add
 non-breaking spaces to the right places.
